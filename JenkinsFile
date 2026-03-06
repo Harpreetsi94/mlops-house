@@ -1,0 +1,34 @@
+pipeline {
+
+agent any
+
+stages {
+
+stage('Clone') {
+steps {
+git 'https://github.com/username/mlops-project.git'
+}
+}
+
+stage('Build Docker') {
+steps {
+sh 'docker build -t username/ml-model:1.0 .'
+}
+}
+
+stage('Push Image') {
+steps {
+sh 'docker push username/ml-model:1.0'
+}
+}
+
+stage('Deploy Kubernetes') {
+steps {
+sh 'kubectl apply -f kubernetes/deployment.yaml'
+sh 'kubectl apply -f kubernetes/service.yaml'
+}
+}
+
+}
+
+}
