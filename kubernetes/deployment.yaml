@@ -23,7 +23,7 @@ spec:
 
       - name: ml-api
 
-        image: username/house-price-ml:1.0
+        image: harpreetsi94/house-price-ml:1.0
 
         ports:
         - containerPort: 8000
