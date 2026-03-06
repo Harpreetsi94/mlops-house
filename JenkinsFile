@@ -12,7 +12,7 @@ pipeline {
 
  stage('Build Docker') {
  steps {
- sh 'docker build -t ml-model .'
+ bat 'docker build -t ml-model .'
  }
  }
 
@@ -20,7 +20,7 @@ pipeline {
 
  stage('Deploy') {
  steps {
- sh 'kubectl apply -f kubernetes/'
+ bat 'kubectl apply -f kubernetes/'
  }
  }
 
