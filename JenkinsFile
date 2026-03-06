@@ -15,6 +15,8 @@ pipeline {
  sh 'docker build -t ml-model .'
  }
  }
+ 
+//for deployment, we need to have kubectl installed and configured in the Jenkins environment
 
  stage('Deploy') {
  steps {
