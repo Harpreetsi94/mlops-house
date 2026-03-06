@@ -20,7 +20,10 @@ pipeline {
 
  stage('Deploy') {
  steps {
- bat 'kubectl apply -f kubernetes/'
+        bat 'kubectl config view'
+        bat 'kubectl cluster-info'
+        bat 'kubectl get nodes'
+        bat 'set KUBECONFIG=C:\\Users\\simra\\.kube\\config && kubectl apply -f kubernetes/'
  }
  }
 
