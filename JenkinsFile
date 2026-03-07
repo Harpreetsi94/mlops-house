@@ -16,13 +16,20 @@ pipeline {
  }
  }
 
+//checking if Kubernetes cluster is accessible from Jenkins server
+
+stage('Test Kubernetes') {
+    steps {
+        bat 'kubectl cluster-info'
+        bat 'kubectl get nodes'
+    }
+}
+
+
 //for deployment, we need to have kubectl installed and configured in the Jenkins server to connect to the Kubernetes cluster
 
  stage('Deploy') {
  steps {
-        bat 'kubectl config view'
-        bat 'kubectl cluster-info'
-        bat 'kubectl get nodes'
         bat 'set KUBECONFIG=C:\\Users\\simra\\.kube\\config && kubectl apply -f kubernetes/'
  }
  }
