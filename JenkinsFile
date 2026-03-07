@@ -1,39 +1,32 @@
 pipeline {
+    agent any
 
- agent any
+    stages {
 
- stages {
+        stage('Clone Repo') {
+            steps {
+                git 'https://github.com/harpreetsi94/mlops-house.git'
+            }
+        }
 
- stage('Clone Repo') {
- steps {
- git branch: 'main', url: 'https://github.com/harpreetsi94/mlops-house.git'
- }
- }
-
- stage('Build Docker') {
- steps {
- bat 'docker build -t ml-model .'
- }
- }
-
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker build -t ml-model:latest .'
+            }
+        }
 //checking if Kubernetes cluster is accessible from Jenkins server
-
-stage('Test Kubernetes') {
-    steps {
-        bat 'kubectl cluster-info'
-        bat 'kubectl get nodes'
-    }
-}
-
-
+        stage('Check Kubernetes Cluster') {
+            steps {
+                bat 'set KUBECONFIG=C:\\Users\\simra\\.kube\\config && kubectl cluster-info'
+                bat 'set KUBECONFIG=C:\\Users\\simra\\.kube\\config && kubectl get nodes'
+            }
+        }
 //for deployment, we need to have kubectl installed and configured in the Jenkins server to connect to the Kubernetes cluster
+        stage('Deploy to Kubernetes') {
+            steps {
+                bat 'set KUBECONFIG=C:\\Users\\simra\\.kube\\config && kubectl apply -f kubernetes/'
+            }
+        }
 
- stage('Deploy') {
- steps {
-        bat 'set KUBECONFIG=C:\\Users\\simra\\.kube\\config && kubectl apply -f kubernetes/'
- }
- }
-
- }
-
+    }
 }
