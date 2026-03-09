@@ -3,11 +3,13 @@ pipeline {
 
     stages {
 
-        stage('Clone Repo') {
-            steps {
-                git 'https://github.com/harpreetsi94/mlops-house.git'
-            }
-        }
+       stage('Clone Repo') {
+    steps {
+       git branch: 'main',  // ← change 'master' to 'main'
+            url: 'https://github.com/harpreetsi94/mlops-house.git'
+       
+       }
+               }
 
         stage('Build Docker Image') {
             steps {
