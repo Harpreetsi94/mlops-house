@@ -17,7 +17,7 @@ pipeline {
             }
         }
         
-       stage('Check Kubernetes Cluster') {
+       stage('Check Kubernetes Cluster Info') {
               steps {
         withEnv(['KUBECONFIG=C:\\ProgramData\\Jenkins\\.jenkins\\.kube\\config']) {
             bat 'kubectl cluster-info'
