@@ -16,6 +16,15 @@ pipeline {
                 bat 'docker build -t ml-model:latest .'
             }
         }
+        
+       stage('Check Kubernetes Cluster') {
+              steps {
+        withEnv(['KUBECONFIG=C:\\ProgramData\\Jenkins\\.jenkins\\.kube\\config']) {
+            bat 'kubectl cluster-info'
+                  }
+             }
+         }
+
 //checking if Kubernetes cluster is accessible from Jenkins server
         stage('Check Kubernetes Cluster') {
             steps {
