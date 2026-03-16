@@ -1,43 +1,56 @@
 pipeline {
     agent any
-
+    environment {
+        KUBECONFIG = 'C:\\ProgramData\\Jenkins\\.kube\\config'
+    }
     stages {
-
-       stage('Clone Repo') {
-    steps {
-       git branch: 'main',  // ← change 'master' to 'main'
-            url: 'https://github.com/harpreetsi94/mlops-house.git'
-       
-       }
-               }
+        stage('Clone Repo') {
+            steps {
+                git 'https://github.com/harpreetsi94/mlops-house.git'
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t ml-model:latest .'
             }
         }
-        
-       stage('Check Kubernetes Cluster Info') {
-              steps {
-        withEnv(['KUBECONFIG=C:\\ProgramData\\Jenkins\\.jenkins\\.kube\\config']) {
-            bat 'kubectl cluster-info || echo "Cluster check failed, continuing...'
-                  }
-             }
-         }
 
-//checking if Kubernetes cluster is accessible from Jenkins server
-        stage('Check Kubernetes Cluster') {
+        stage('Set Kubernetes Context') {
             steps {
-                bat 'set KUBECONFIG=C:\\Users\\simra\\.kube\\config && kubectl cluster-info'
-                bat 'set KUBECONFIG=C:\\Users\\simra\\.kube\\config && kubectl get nodes'
+                bat 'kubectl config use-context minikube'
             }
         }
-//for deployment, we need to have kubectl installed and configured in the Jenkins server to connect to the Kubernetes cluster
+
+        stage('Load Image into Minikube') {
+            steps {
+                bat 'minikube image load ml-model:latest'
+            }
+        }
+
+        stage('Check Kubernetes Cluster Info') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    bat 'kubectl cluster-info'
+                }
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
-                bat 'set KUBECONFIG=C:\\Users\\simra\\.kube\\config && kubectl apply -f kubernetes/'
+                bat 'kubectl apply -f k8s/'
             }
         }
-
     }
 }
+```
+
+---
+
+## Summary
+```
+Before:  minikube restarts → random port (55963, 61234, etc.)
+              └── Jenkins kubeconfig goes stale → pipeline fails
+
+After:   minikube restarts → always port 8443
+              └── Jenkins kubeconfig stays valid → pipeline works ✅
