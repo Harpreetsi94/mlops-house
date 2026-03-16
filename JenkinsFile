@@ -43,10 +43,10 @@ pipeline {
         }
     }
 }
-/////////////////////////////////////////////////////////////////////////////////////////////
-Summary
-Before:  minikube restarts → random port (55963, 61234, etc.)
-              └── Jenkins kubeconfig goes stale → pipeline fails
 
-After:   minikube restarts → always port 8443
-              └── Jenkins kubeconfig stays valid → pipeline works ✅
+/////////////////////////////////////////////////////////////////////////////////////////////
+Summary:
+
+Before:  minikube restarts → random port (55963, 61234, etc.) - Jenkins kubeconfig goes stale → pipeline fails
+
+After:   minikube restarts → always port 8443 - Jenkins kubeconfig stays valid → pipeline works ✅
